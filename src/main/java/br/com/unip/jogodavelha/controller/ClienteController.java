@@ -79,6 +79,21 @@ public class ClienteController {
         return this.getClienteService().buttonNumberClicked(buttonNumber);
     }
 
+    @PostMapping("/sendMessage")
+    public ResponseEntity<Void> sendMessage(@RequestBody String message) {
+        return this.getClienteService().sendMessage(message);
+    }
+
+    @PostMapping("/received")
+    public ResponseEntity<Void> sendMessage() {
+        return this.getClienteService().messegeReceived();
+    }
+
+    @GetMapping("/newMessage")
+    public ResponseEntity<List<String>> getMessage() {
+        return this.getClienteService().getMessage();
+    }
+
     @GetMapping("/blockSquare")
     public ResponseEntity<GameDTO> blockSquareGame() {
         return this.getClienteService().blockSquareGame();

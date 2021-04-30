@@ -39,4 +39,10 @@ public interface ClienteService {
 
     ResponseEntity<GameDTO> firstToPlay();
 
+    ResponseEntity<List<String>> getMessage();
+
+    ResponseEntity<Void> messegeReceived();
+
+    ResponseEntity<Void> sendMessage(String message);
+
 }

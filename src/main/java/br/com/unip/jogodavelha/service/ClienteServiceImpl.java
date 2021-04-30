@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,8 @@ public class ClienteServiceImpl implements ClienteService {
 
     private static boolean isAllowed = false;
 
+    private static boolean opponentMessage = false;
+
     private static String currentNicknameTurn;
 
     private static String myNickname;
@@ -64,6 +67,8 @@ public class ClienteServiceImpl implements ClienteService {
     private static long myId;
 
     private static long opponentId;
+
+    private static List<String> messages = new ArrayList<>();
 
     @Transactional
     @Override
@@ -235,6 +240,27 @@ public class ClienteServiceImpl implements ClienteService {
         return ok(this.createNewGameDTO());
     }
 
+    @Override
+    public ResponseEntity<List<String>> getMessage() {
+        if (isOpponentMessage()) {
+            return ok(getMessages());
+        }
+        return noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> messegeReceived() {
+        setOpponentMessage(false);
+        return noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> sendMessage(String message) {
+        getMessages().add(message);
+        this.getServidorJogo().getClienteChat().sendMessage(message);
+        return noContent().build();
+    }
+
     private GameDTO createNewGameDTO() {
         GameDTO gameDTO = new GameDTO();
         gameDTO.setMyNickname(getMyNickname());
@@ -251,6 +277,8 @@ public class ClienteServiceImpl implements ClienteService {
         }
         return false;
     }
+
+    // Get and set //
 
     public static boolean isIsAllowed() {
         return isAllowed;
@@ -306,5 +334,21 @@ public class ClienteServiceImpl implements ClienteService {
 
     public static void setOpponentNickname(String opponentNickname) {
         ClienteServiceImpl.opponentNickname = opponentNickname;
+    }
+
+    public static List<String> getMessages() {
+        return messages;
+    }
+
+    public static void setMessages(List<String> messages) {
+        ClienteServiceImpl.messages = messages;
+    }
+
+    public static boolean isOpponentMessage() {
+        return opponentMessage;
+    }
+
+    public static void setOpponentMessage(boolean opponentMessage) {
+        ClienteServiceImpl.opponentMessage = opponentMessage;
     }
 }

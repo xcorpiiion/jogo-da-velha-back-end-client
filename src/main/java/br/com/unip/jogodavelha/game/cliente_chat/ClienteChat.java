@@ -26,19 +26,26 @@ public class ClienteChat {
 
     private Integer porta;
 
-    public void executa() throws IOException {
-        try (Socket cliente = new Socket(this.host, this.porta);
-             Scanner teclado = new Scanner(in);
-             PrintStream saida = new PrintStream(cliente.getOutputStream())) {
-            log.info("Cliente conectado no servidor do chat...");
+    private PrintStream saida;
 
+    public void executa() throws IOException {
+        try {
+            Socket cliente = new Socket(this.host, this.porta);
+            this.saida = new PrintStream(cliente.getOutputStream());
+            log.info("Cliente conectado no servidor do chat...");
+            Scanner teclado = new Scanner(in);
             RecebedorMensagemServidor recebedorMensagem = new RecebedorMensagemServidor(cliente.getInputStream());
             new Thread(recebedorMensagem).start();
-
             while (teclado.hasNextLine()) {
                 log.info("Digite a sua mensagem...");
                 saida.println(teclado.nextLine());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public void sendMessage(String yourMessage) {
+        this.getSaida().println(yourMessage);
     }
 }
