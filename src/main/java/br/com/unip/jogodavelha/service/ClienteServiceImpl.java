@@ -178,6 +178,7 @@ public class ClienteServiceImpl implements ClienteService {
         try {
             ResponseEntity<Cliente> clienteReturned = this.findByEmail(email);
             log.info("Iniciando a conexão do jogador");
+            setMessages(new ArrayList<>());
             cliente = new ClienteJogo(ip, port, playerName);
             cliente.executa();
             cliente.sendToGameServer("logar;" + playerName);
